@@ -66,8 +66,8 @@ namespace MailManager
             Int32 selectedRowCount =
                 dataGridView1.Rows.GetRowCount(DataGridViewElementStates.Selected);
             string pattern = @"[<]*" + "[^\"]+[A-Za-z]*[A-Za-z]*[^\"]*" + @"[^(\s]*.[>]";
-            ["]*[A-Za-z]*[-]+[A-Za-z]*["]*[\s] *
-                [<] *[>] *
+           // ["]*[A-Za-z]*[-]+[A-Za-z]*["]*[\s] *
+            //    [<] *[>] *
 
             if (selectedRowCount > 0)
             {
