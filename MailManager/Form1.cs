@@ -36,11 +36,10 @@ namespace MailManager
                 var maxLength3 = AllMsgReceived.Max(ot => ot.Headers.Date.Length);
                 var mails = new List<Mail>();
 
-                string pattern = @"[<]*" + "[^\"]+[A-Za-z]*[A-Za-z]*[^\"]*" + @"[^(\s]*.[>]";
-
+                string pattern = @"[A-Za-z0-9]*[@]{1}[A-Za-z0-9]*[.\]{1}[A-Za-z]*";
                 foreach (var msg in AllMsgReceived)
                 {
-                    mails.Add(new Mail { From = Regex.Replace(msg.Headers.From.ToString(), pattern, String.Empty) , Subject = msg.Headers.Subject, Date = msg.Headers.DateSent.ToString() });
+                    mails.Add(new Mail { From = Regex.Match(msg.Headers.From.ToString(), pattern) , Subject = msg.Headers.Subject, Date = msg.Headers.DateSent.ToString() });
                 }
                 dataGridView1.DataSource = mails;
                 dataGridView1.AutoResizeColumns();
@@ -63,15 +62,10 @@ namespace MailManager
 
         private void button2_Click(object sender, EventArgs e)
         {
-            Int32 selectedRowCount =
-                dataGridView1.Rows.GetRowCount(DataGridViewElementStates.Selected);
-            string pattern = @"[<]*" + "[^\"]+[A-Za-z]*[A-Za-z]*[^\"]*" + @"[^(\s]*.[>]";
-           // ["]*[A-Za-z]*[-]+[A-Za-z]*["]*[\s] *
-            //    [<] *[>] *
-
+            Int32 selectedRowCount = dataGridView1.Rows.GetRowCount(DataGridViewElementStates.Selected);
             if (selectedRowCount > 0)
             {
-                var SenTo = Regex.Replace(dataGridView1.SelectedRows[0].Cells[0].EditedFormattedValue.ToString(), pattern, String.Empty);
+                var SenTo = dataGridView1.SelectedRows[0].Cells[0].EditedFormattedValue.ToString();
             }
         }
     }
