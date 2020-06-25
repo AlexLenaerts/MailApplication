@@ -44,7 +44,7 @@ namespace MailManager
                 string pattern = @"[A-Za-z0-9]*[@]{1}[A-Za-z0-9]*[.\]{1}[A-Za-z]*";
                 foreach (var msg in AllMsgReceived)
                 {
-                    mails.Add(new Mail { From = Regex.Match(msg.Headers.From.ToString(), pattern), Subject = msg.Headers.Subject, Date = msg.Headers.DateSent.ToString() });
+                    mails.Add(new Mail { From = Regex.Match(msg.Headers.From.ToString(), pattern).Value, Subject = msg.Headers.Subject, Date = msg.Headers.DateSent.ToString() });
                 }
                 dataGridView1.DataSource = mails;
                 dataGridView1.AutoResizeColumns();
