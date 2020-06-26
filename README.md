@@ -6,3 +6,10 @@ Supporte:
 - Windows 
 - Gmail (les autres viendront bientôt)
 
+
+Fonctionnalités: 
+- reception des mails 
+- écriture et envoi de messages 
+
+
+
