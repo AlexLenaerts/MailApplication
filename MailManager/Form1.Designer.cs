@@ -1,5 +1,9 @@
-﻿namespace MailManager
+﻿using System;
+using System.Windows.Forms;
+
+namespace MailManager
 {
+
     partial class Form1
     {
         /// <summary>
@@ -28,11 +32,15 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
             this.button1 = new System.Windows.Forms.Button();
             this.button2 = new System.Windows.Forms.Button();
             this.button3 = new System.Windows.Forms.Button();
+            this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
+            this.contextMenuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
             // dataGridView1
@@ -46,6 +54,7 @@
             this.dataGridView1.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.dataGridView1.Size = new System.Drawing.Size(240, 150);
             this.dataGridView1.TabIndex = 0;
+            this.dataGridView1.MouseDown += new System.Windows.Forms.MouseEventHandler(this.Form1_MouseDown);
             // 
             // button1
             // 
@@ -61,20 +70,34 @@
             // 
             this.button2.Location = new System.Drawing.Point(13, 55);
             this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(100, 34);
+            this.button2.Size = new System.Drawing.Size(100, 75);
             this.button2.TabIndex = 2;
-            this.button2.Text = "Envoyés";
+            this.button2.Text = "Nouveau message";
             this.button2.UseVisualStyleBackColor = true;
             this.button2.Click += new System.EventHandler(this.button2_Click);
             // 
             // button3
             // 
-            this.button3.Location = new System.Drawing.Point(13, 96);
+            this.button3.Location = new System.Drawing.Point(13, 136);
             this.button3.Name = "button3";
             this.button3.Size = new System.Drawing.Size(100, 34);
             this.button3.TabIndex = 3;
             this.button3.Text = "Supprimés";
             this.button3.UseVisualStyleBackColor = true;
+            // 
+            // contextMenuStrip1
+            // 
+            this.contextMenuStrip1.ImageScalingSize = new System.Drawing.Size(24, 24);
+            this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.toolStripMenuItem1});
+            this.contextMenuStrip1.Name = "contextMenuStrip1";
+            this.contextMenuStrip1.Size = new System.Drawing.Size(213, 36);
+            // 
+            // toolStripMenuItem1
+            // 
+            this.toolStripMenuItem1.Name = "toolStripMenuItem1";
+            this.toolStripMenuItem1.Size = new System.Drawing.Size(212, 32);
+            this.toolStripMenuItem1.Text = "Envoyer un msg";
             // 
             // Form1
             // 
@@ -89,6 +112,7 @@
             this.Name = "Form1";
             this.Text = "Form1";
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
+            this.contextMenuStrip1.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -99,6 +123,8 @@
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.Button button2;
         private System.Windows.Forms.Button button3;
+        private ContextMenuStrip contextMenuStrip1;
+        private ToolStripMenuItem toolStripMenuItem1;
     }
 }
 
