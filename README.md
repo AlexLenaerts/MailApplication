@@ -4,5 +4,5 @@ Il s'agit d'un client email universel et gratuit permettant d’utiliser et de g
 
 Supporte:
 - Windows 
-- client mail actuel : Gmail (les autres viendront bientôt)
+- Gmail (les autres viendront bientôt)
 
