@@ -1,6 +1,6 @@
 # MailApplication
 
-Il s'agit d'un client email universel et gratuit permettant d’utiliser et de gérer ses comptes mails
+Il s'agit d'un client email universel, très basique et gratuit permettant d’utiliser et de gérer ses comptes mails
 
 Supporte:
 - Windows 
