@@ -26,6 +26,11 @@ namespace MailManager
         public Form1()
         {
             InitializeComponent();
+            dataGridView1.DataSource = LoadApp.mail;
+            dataGridView1.Columns["msg"].Visible = false;
+
+            dataGridView1.AutoResizeColumns();
+            dataGridView1.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.AllCells;
 
 
             /*Extract mail from DB and write them in a dataGridView */

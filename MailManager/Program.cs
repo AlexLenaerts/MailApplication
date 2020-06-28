@@ -15,7 +15,15 @@ namespace MailManager
             Application.SetHighDpiMode(HighDpiMode.SystemAware);
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new Form1());
+            LoadApp loadpage = new LoadApp();
+            Application.Run(new LoadApp());
+
+            if (loadpage.successLoad)
+            {
+                // MainForm is defined elsewhere
+                Application.Run(new Form1());
+            }
+
         }
 
     }

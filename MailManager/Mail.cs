@@ -4,7 +4,7 @@ using System.Text;
 
 namespace MailManager
 {
-    class Mail
+    public class Mail
     {
         public string From { get; set; }
         public string Subject { get; set; }
