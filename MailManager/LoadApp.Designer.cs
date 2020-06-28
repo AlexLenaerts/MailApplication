@@ -1,4 +1,5 @@
-﻿using System.Threading;
+﻿using System.Drawing;
+using System.Threading;
 
 namespace MailManager
 {
@@ -39,9 +40,11 @@ namespace MailManager
             // 
             this.pictureBox1.Location = new System.Drawing.Point(12, 12);
             this.pictureBox1.Name = "pictureBox1";
+            this.pictureBox1.Image = new Bitmap(Image.FromFile(@"C:\Users\Alexandre\source\repos\MailManager\start.jpg"), new Size(782, 321));
             this.pictureBox1.Size = new System.Drawing.Size(782, 321);
             this.pictureBox1.TabIndex = 0;
             this.pictureBox1.TabStop = false;
+
             // 
             // progressBar1
             // 

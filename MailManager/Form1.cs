@@ -1,6 +1,7 @@
 ﻿using OpenPop.Mime;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Net.Mail;
 using System.Text;
@@ -26,12 +27,22 @@ namespace MailManager
         public Form1()
         {
             InitializeComponent();
+            dataGridView1.SelectionMode =
+            DataGridViewSelectionMode.FullRowSelect;
+            dataGridView1.MultiSelect = false;
+
+            dataGridView1.AutoSize = true;
+            doubleClickTimer.Interval = 100;
+            doubleClickTimer.Tick +=
+                new EventHandler(doubleClickTimer_Tick);
             dataGridView1.DataSource = LoadApp.mail;
             dataGridView1.Columns["msg"].Visible = false;
 
             dataGridView1.AutoResizeColumns();
             dataGridView1.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.AllCells;
-
+            dataGridView1.RowHeadersVisible = false;
+            dataGridView1.BackgroundColor = System.Drawing.SystemColors.Control;
+            dataGridView1.BorderStyle = BorderStyle.None;
 
             /*Extract mail from DB and write them in a dataGridView */
 
@@ -52,8 +63,6 @@ namespace MailManager
             /*Refresh (count message and compare with database*/
             /*Save new mail to DB*/
 
-            try
-            {
                 System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);
                 var AllMsgReceived = Manage.Receive();
                 var maxLength1 = AllMsgReceived.Max(ot => (ot.Headers.From).ToString().Length);
@@ -76,15 +85,11 @@ namespace MailManager
                 }
                 dataGridView1.DataSource = mails;
                 dataGridView1.Columns["msg"].Visible = false;
-
                 dataGridView1.AutoResizeColumns();
                 dataGridView1.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.AllCells;
-            }
-            catch (SmtpException ex)
-            {
-                //Console.WriteLine(ex.ToString());
-                //Console.ReadKey();
-            }
+                dataGridView1.ScrollBars = ScrollBars.Both;
+
+            
         }
         private void button2_Click(object sender, EventArgs e)
         {

@@ -1,4 +1,5 @@
 ﻿using OpenPop.Mime;
+using OpenPop.Pop3;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -20,22 +21,41 @@ namespace MailManager
         public LoadApp()
         {
             InitializeComponent();
+            load();
+        }
+        public void load()
+        {
+            progressBar1.Visible = true;
+
             progressBar1.Minimum = 0;
+            progressBar1.Step = 1;
+            progressBar1.Value= 1;
+
             // Set Maximum to the total number of files to copy.
-            System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);
-            var AllMsgReceived = Manage.Receive();
-            progressBar1.Maximum = AllMsgReceived.Count();
+            Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);
+            var client = new Pop3Client();
+            client.Connect("pop.gmail.com", 995, true);
+            client.Authenticate("recent:alexandrelenaerts@gmail.com", "vnfkfkxlcgpnebra");
+            List<string> uids = client.GetMessageUids();
+            List<OpenPop.Mime.Message> AllMsgReceived = new List<OpenPop.Mime.Message>();
+            List<string> seenUids = new List<string>();
+            int messageCount = client.GetMessageCount();
+            progressBar1.Maximum = 30;
+            for (int i = messageCount; i > (messageCount - 30); i--)
+            {
+                progressBar1.PerformStep();
+                OpenPop.Mime.Message unseenMessage = client.GetMessage(i);
+                AllMsgReceived.Add(unseenMessage);
+            }
 
             var maxLength1 = AllMsgReceived.Max(ot => (ot.Headers.From).ToString().Length);
             var maxLength2 = AllMsgReceived.Max(ot => ot.Headers.Subject.Length);
             var maxLength3 = AllMsgReceived.Max(ot => ot.Headers.Date.Length);
             var mails = new List<Mail>();
             MessagePart plainTextPart = null, HTMLTextPart = null;
-
             string pattern = @"[A-Za-z0-9]*[@]{1}[A-Za-z0-9]*[.\]{1}[A-Za-z]*";
             foreach (var msg in AllMsgReceived)
             {
-                progressBar1.Value++;
                 //Check you message is not null
                 if (msg != null)
                 {

@@ -26,7 +26,7 @@ namespace MailManager
         }
         public static MailMessage Message(MailAddress tomail, string messageBody, string messageSubject)
         {
-            var fromAddress = new MailAddress("alexandrelenaerts@gmail.com", "From Name");
+            var fromAddress = new MailAddress("alexandrelenaerts@gmail.com", "Alexandre Lenaerts");
             MailMessage message = new MailMessage(fromAddress, tomail);
             message.Subject = messageSubject;
             message.Body = messageBody;
@@ -42,7 +42,7 @@ namespace MailManager
             List<string> seenUids = new List<string>();
             int messageCount = client.GetMessageCount();
 
-            for (int i = messageCount; i > (messageCount-20) ; i--)
+            for (int i = messageCount; i > (messageCount-30) ; i--)
             {
                 OpenPop.Mime.Message unseenMessage = client.GetMessage(i);
 
@@ -50,12 +50,12 @@ namespace MailManager
             }
             return newMessages;
         }
-
-        public static void SendMessage(string from, string sub, string msg)
+        
+        public static void SendMessage(string to, string sub, string msg)
         {
-            var fromAddress = new MailAddress("alexandrelenaerts@gmail.com", "From Name");
+            var fromAddress = new MailAddress("alexandrelenaerts@gmail.com", "Alexandre Lenaerts");
             var client = Manage.Connect(fromAddress);
-            var senTo = new MailAddress(from, "From Name");
+            var senTo = new MailAddress(to);
             var subject = sub;
             var message = msg;
             client.Send(Manage.Message(senTo, message, subject));
