@@ -8,7 +8,7 @@ Supporte:
 
 
 Fonctionnalités: 
-- reception des mails 
+- réception de mails 
 - écriture et envoi de messages 
 
 
