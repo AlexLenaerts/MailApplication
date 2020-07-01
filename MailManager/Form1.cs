@@ -148,6 +148,7 @@ namespace MailManager
                     //afficher messsage
                     ListView.SelectedListViewItemCollection mails = listView1.SelectedItems;
 
+
                     foreach (ListViewItem item in mails)
                     {
                         var SenTo = item.Text;

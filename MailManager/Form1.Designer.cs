@@ -84,7 +84,6 @@ namespace MailManager
             this.listView1.TabIndex = 3;
             this.listView1.UseCompatibleStateImageBehavior = false;
             this.listView1.MouseDown += new System.Windows.Forms.MouseEventHandler(this.Form1_MouseDown);
-
             // 
             // Form1
             // 
