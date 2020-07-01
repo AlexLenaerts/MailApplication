@@ -33,32 +33,19 @@ namespace MailManager
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            this.dataGridView1 = new System.Windows.Forms.DataGridView();
             this.button1 = new System.Windows.Forms.Button();
             this.button2 = new System.Windows.Forms.Button();
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
+            this.listView1 = new System.Windows.Forms.ListView();
             this.contextMenuStrip1.SuspendLayout();
             this.SuspendLayout();
-            // 
-            // dataGridView1
-            // 
-            this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dataGridView1.Location = new System.Drawing.Point(120, 14);
-            this.dataGridView1.MultiSelect = false;
-            this.dataGridView1.Name = "dataGridView1";
-            this.dataGridView1.RowHeadersWidth = 62;
-            this.dataGridView1.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dataGridView1.Size = new System.Drawing.Size(0, 0);
-            this.dataGridView1.TabIndex = 0;
-            this.dataGridView1.MouseDown += new System.Windows.Forms.MouseEventHandler(this.Form1_MouseDown);
             // 
             // button1
             // 
             this.button1.Location = new System.Drawing.Point(13, 14);
             this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(100, 34);
+            this.button1.Size = new System.Drawing.Size(150, 34);
             this.button1.TabIndex = 1;
             this.button1.Text = "Rafraichir";
             this.button1.UseVisualStyleBackColor = true;
@@ -68,7 +55,7 @@ namespace MailManager
             // 
             this.button2.Location = new System.Drawing.Point(13, 89);
             this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(100, 75);
+            this.button2.Size = new System.Drawing.Size(150, 75);
             this.button2.TabIndex = 2;
             this.button2.Text = "Nouveau message";
             this.button2.UseVisualStyleBackColor = true;
@@ -88,18 +75,28 @@ namespace MailManager
             this.toolStripMenuItem1.Size = new System.Drawing.Size(212, 32);
             this.toolStripMenuItem1.Text = "Envoyer un msg";
             // 
+            // listView1
+            // 
+            this.listView1.HideSelection = false;
+            this.listView1.Location = new System.Drawing.Point(169, 18);
+            this.listView1.Name = "listView1";
+            this.listView1.Size = new System.Drawing.Size(1691, 974);
+            this.listView1.TabIndex = 3;
+            this.listView1.UseCompatibleStateImageBehavior = false;
+            this.listView1.MouseDown += new System.Windows.Forms.MouseEventHandler(this.Form1_MouseDown);
+
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(10F, 25F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoSize = true;
-            this.ClientSize = new System.Drawing.Size(1370, 594);
+            this.ClientSize = new System.Drawing.Size(1898, 1024);
+            this.Controls.Add(this.listView1);
             this.Controls.Add(this.button2);
             this.Controls.Add(this.button1);
-            this.Controls.Add(this.dataGridView1);
             this.Name = "Form1";
             this.Text = "Form1";
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
             this.contextMenuStrip1.ResumeLayout(false);
             this.ResumeLayout(false);
 
@@ -111,6 +108,7 @@ namespace MailManager
         private System.Windows.Forms.Button button2;
         private ContextMenuStrip contextMenuStrip1;
         private ToolStripMenuItem toolStripMenuItem1;
+        private ListView listView1;
     }
 }
 

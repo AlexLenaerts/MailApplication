@@ -42,7 +42,7 @@ namespace MailManager
             List<string> seenUids = new List<string>();
             int messageCount = client.GetMessageCount();
 
-            for (int i = messageCount; i > (messageCount-30) ; i--)
+            for (int i = messageCount; i > (messageCount-50) ; i--)
             {
                 OpenPop.Mime.Message unseenMessage = client.GetMessage(i);
 

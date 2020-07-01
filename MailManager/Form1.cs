@@ -27,35 +27,37 @@ namespace MailManager
         public Form1()
         {
             InitializeComponent();
-            dataGridView1.SelectionMode =
-            DataGridViewSelectionMode.FullRowSelect;
-            dataGridView1.MultiSelect = false;
-
-            dataGridView1.AutoSize = true;
             doubleClickTimer.Interval = 100;
             doubleClickTimer.Tick +=
                 new EventHandler(doubleClickTimer_Tick);
-            dataGridView1.DataSource = LoadApp.mail;
-            dataGridView1.Columns["msg"].Visible = false;
-
-            dataGridView1.AutoResizeColumns();
-            dataGridView1.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.AllCells;
-            dataGridView1.RowHeadersVisible = false;
-            dataGridView1.BackgroundColor = System.Drawing.SystemColors.Control;
-            dataGridView1.BorderStyle = BorderStyle.None;
-
-            /*Extract mail from DB and write them in a dataGridView */
-
+            listView1.Columns.Add("From", 20);
+            listView1.Columns.Add("Subject", 10);
+            listView1.Columns.Add("Date", 10);
+            listView1.Columns.Add("Content", 0);
+            DisplayData(LoadApp.mail);
         }
 
-        private void GetData()
+        private void DisplayData(List<Mail> receivedMail)
         {
-            throw new NotImplementedException();
-        }
+            listView1.Scrollable = true;
+            listView1.View = View.Details;
+            listView1.AllowColumnReorder = false;
+            listView1.FullRowSelect = true;
+            listView1.GridLines = true;
 
-        private void listBox1_SelectedIndexChanged(object sender, EventArgs e)
-        {
-
+            foreach (var element in receivedMail)
+            {
+                ListViewItem row = new ListViewItem(element.From);
+                row.SubItems.Add(new ListViewItem.ListViewSubItem(row, element.Subject));
+                row.SubItems.Add(new ListViewItem.ListViewSubItem(row, element.Date));
+                row.SubItems.Add(new ListViewItem.ListViewSubItem(row, element.msg));
+                listView1.Items.Add(row);
+            }
+            listView1.AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent);
+            listView1.AutoResizeColumns(ColumnHeaderAutoResizeStyle.HeaderSize);
+            listView1.Columns[3].Width = 0;
+            listView1.Columns[1].Width = 1691 - listView1.Columns[0].Width - listView1.Columns[2].Width - SystemInformation.VerticalScrollBarWidth - 10;
+            ;
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -63,16 +65,12 @@ namespace MailManager
             /*Refresh (count message and compare with database*/
             /*Save new mail to DB*/
 
-                System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);
-                var AllMsgReceived = Manage.Receive();
-                var maxLength1 = AllMsgReceived.Max(ot => (ot.Headers.From).ToString().Length);
-                var maxLength2 = AllMsgReceived.Max(ot => ot.Headers.Subject.Length);
-                var maxLength3 = AllMsgReceived.Max(ot => ot.Headers.Date.Length);
+                System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);                
                 var mails = new List<Mail>();
                 MessagePart plainTextPart = null, HTMLTextPart = null;
 
                 string pattern = @"[A-Za-z0-9]*[@]{1}[A-Za-z0-9]*[.\]{1}[A-Za-z]*";
-                foreach (var msg in AllMsgReceived)
+                foreach (var msg in Manage.Receive())
                 {
                     //Check you message is not null
                     if (msg != null)
@@ -83,13 +81,8 @@ namespace MailManager
                         mails.Add(new Mail { From = Regex.Match(msg.Headers.From.ToString(), pattern).Value, Subject = msg.Headers.Subject, Date = msg.Headers.DateSent.ToString(), msg = (plainTextPart == null ? "" : plainTextPart.GetBodyAsText().Trim()) });
                     }
                 }
-                dataGridView1.DataSource = mails;
-                dataGridView1.Columns["msg"].Visible = false;
-                dataGridView1.AutoResizeColumns();
-                dataGridView1.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.AllCells;
-                dataGridView1.ScrollBars = ScrollBars.Both;
+            DisplayData(mails);
 
-            
         }
         private void button2_Click(object sender, EventArgs e)
         {
@@ -98,6 +91,7 @@ namespace MailManager
             Form2 f2 = new Form2();
             f2.Show();
         }
+
         void Form1_MouseDown(object sender, MouseEventArgs e)
         {
             // This is the first mouse click.
@@ -121,6 +115,8 @@ namespace MailManager
                 }
             }
         }
+
+
         void doubleClickTimer_Tick(object sender, EventArgs e)
         {
             milliseconds += 100;
@@ -132,29 +128,31 @@ namespace MailManager
 
                 if (isDoubleClick)
                 {
-                    Int32 selectedRowCount = dataGridView1.Rows.GetRowCount(DataGridViewElementStates.Selected);
-                    if (selectedRowCount > 0)
+                    //répondre
+
+                    ListView.SelectedListViewItemCollection mails =  listView1.SelectedItems;
+                    foreach (ListViewItem item in mails)
                     {
-                        var SenTo = dataGridView1.SelectedRows[0].Cells[0].EditedFormattedValue.ToString();
+                        var SenTo = item.Text;
                         Form1.SenTo = SenTo;
                         var client = Manage.Connect(new MailAddress("alexandrelenaerts@gmail.com", "From Name"));
                         MailAddress tomail = new MailAddress(SenTo, "To Name");
-                        Form1.Msg = dataGridView1.SelectedRows[0].Cells[3].EditedFormattedValue.ToString();
-                        Form1.Subject = dataGridView1.SelectedRows[0].Cells[1].EditedFormattedValue.ToString();
+                        Form1.Msg = item.SubItems[3].Text;
+                        Form1.Subject = item.SubItems[1].Text;
                         Form3 f3 = new Form3();
                         f3.Show();
-                    }
-
+                     }
                 }
                 if(!isDoubleClick && isRight)
                 {
+                    //afficher messsage
+                    ListView.SelectedListViewItemCollection mails = listView1.SelectedItems;
 
-                    Int32 selectedRowCount = dataGridView1.Rows.GetRowCount(DataGridViewElementStates.Selected);
-                    if (selectedRowCount > 0)
+                    foreach (ListViewItem item in mails)
                     {
-                        var SenTo = dataGridView1.SelectedRows[0].Cells[0].EditedFormattedValue.ToString();
+                        var SenTo = item.Text;
                         Form1.SenTo = SenTo;
-                        Form1.Subject = "Re :" + dataGridView1.SelectedRows[0].Cells[1].EditedFormattedValue.ToString();
+                        Form1.Subject = "Re :" + item.SubItems[1].Text;
                         Form2 f2 = new Form2();
                         f2.Show();
                     }
