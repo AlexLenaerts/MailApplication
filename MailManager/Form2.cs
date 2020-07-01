@@ -14,6 +14,12 @@ namespace MailManager
 {
     public partial class Form2 : Form
     {
+        bool firstClick = true;
+        bool firstClick1 = true;
+        bool firstClick2 = true;
+
+
+
         public Form2()
         {
             InitializeComponent();
@@ -21,6 +27,30 @@ namespace MailManager
             textBox2.Text = Form1.Subject;
             CreateMyMultilineTextBox();
 
+        }
+        private void textBox1_Click(object sender, EventArgs e)
+        {
+            if (firstClick)
+            {
+                textBox1.Text = string.Empty;
+                firstClick = false;
+            }
+        }
+        private void textBox2_Click(object sender, EventArgs e)
+        {
+            if (firstClick1)
+            {
+                textBox2.Text = string.Empty;
+                firstClick1 = false;
+            }
+        }
+        private void textBox3_Click(object sender, EventArgs e)
+        {
+            if (firstClick2)
+            {
+                textBox3.Text = string.Empty;
+                firstClick2 = false;
+            }
         }
         private void button1_Click_1(object sender, EventArgs e)
         {

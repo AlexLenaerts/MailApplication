@@ -11,32 +11,35 @@ namespace MailManager
 {
     public partial class Form1 : Form
     {
-        private readonly string contextMenu;
-
         public static string SenTo { get; internal set; }
         public static string Msg { get; internal set; }
         public static string Subject { get; internal set; }
         public static string Subjec { get; internal set; }
 
-        private bool isFirstClick = true;
-        private bool isDoubleClick = false;
-        private bool isRight = false;
-        private int milliseconds = 0;
-        private Timer doubleClickTimer = new Timer();
-
         public Form1()
         {
             InitializeComponent();
-            doubleClickTimer.Interval = 100;
-            doubleClickTimer.Tick +=
-                new EventHandler(doubleClickTimer_Tick);
+            CreateMyMultilineTextBox();
             listView1.Columns.Add("From", 20);
             listView1.Columns.Add("Subject", 10);
             listView1.Columns.Add("Date", 10);
             listView1.Columns.Add("Content", 0);
             DisplayData(LoadApp.mail);
         }
-
+        public void CreateMyMultilineTextBox()
+        {
+            // Create an instance of a TextBox control.
+            // Set the Multiline property to true.
+            textBox3.Multiline = true;
+            // Add vertical scroll bars to the TextBox control.
+            textBox3.ScrollBars = ScrollBars.Vertical;
+            // Allow the TAB key to be entered in the TextBox control.
+            textBox3.AcceptsReturn = true;
+            // Allow the TAB key to be entered in the TextBox control.
+            textBox3.AcceptsTab = true;
+            // Set WordWrap to true to allow text to wrap to the next line.
+            textBox3.WordWrap = true;
+        }
         private void DisplayData(List<Mail> receivedMail)
         {
             listView1.Scrollable = true;
@@ -56,7 +59,7 @@ namespace MailManager
             listView1.AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent);
             listView1.AutoResizeColumns(ColumnHeaderAutoResizeStyle.HeaderSize);
             listView1.Columns[3].Width = 0;
-            listView1.Columns[1].Width = 1691 - listView1.Columns[0].Width - listView1.Columns[2].Width - SystemInformation.VerticalScrollBarWidth - 10;
+            listView1.Columns[1].Width = 890 - listView1.Columns[0].Width - listView1.Columns[2].Width - SystemInformation.VerticalScrollBarWidth - 10;
             ;
         }
 
@@ -92,78 +95,37 @@ namespace MailManager
             f2.Show();
         }
 
-        void Form1_MouseDown(object sender, MouseEventArgs e)
+        private void listView1_SelectedIndexChanged(object sender, EventArgs e)
         {
-            // This is the first mouse click.
-            if (isFirstClick)
+            //afficher messsage
+            ListView.SelectedListViewItemCollection mails = listView1.SelectedItems;
+            foreach (ListViewItem item in mails)
             {
-                isFirstClick = false;
-                Invalidate();
-                // Start the double click timer.
-                doubleClickTimer.Start();
-                if (e.Button.ToString() == "Right")
-                {
-                    isRight = true;
-                }
+                var SenTo = item.Text;
+                textBox1.Text = SenTo;
+                var client = Manage.Connect(new MailAddress("alexandrelenaerts@gmail.com", "From Name"));
+                MailAddress tomail = new MailAddress(SenTo, "To Name");
+                textBox3.Text = item.SubItems[3].Text;
+                textBox2.Text = item.SubItems[1].Text;
             }
-            // This is the second mouse click.
-            else
+
+        }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            //répondre
+            ListView.SelectedListViewItemCollection mails = listView1.SelectedItems;
+
+            foreach (ListViewItem item in mails)
             {
-                if (milliseconds < SystemInformation.DoubleClickTime)
-                {
-                    isDoubleClick = true;
-                }
-            }
+                 Form1.SenTo = item.Text;
+                 Form1.Subject = "Re :" + item.SubItems[1].Text;
+                 Form2 f2 = new Form2();
+                 f2.Show();
+            }                    
         }
 
 
-        void doubleClickTimer_Tick(object sender, EventArgs e)
-        {
-            milliseconds += 100;
-
-            // The timer has reached the double click time limit.
-            if (milliseconds >= SystemInformation.DoubleClickTime)
-            {
-                doubleClickTimer.Stop();
-
-                if (isDoubleClick)
-                {
-                    //répondre
-
-                    ListView.SelectedListViewItemCollection mails =  listView1.SelectedItems;
-                    foreach (ListViewItem item in mails)
-                    {
-                        var SenTo = item.Text;
-                        Form1.SenTo = SenTo;
-                        var client = Manage.Connect(new MailAddress("alexandrelenaerts@gmail.com", "From Name"));
-                        MailAddress tomail = new MailAddress(SenTo, "To Name");
-                        Form1.Msg = item.SubItems[3].Text;
-                        Form1.Subject = item.SubItems[1].Text;
-                        Form3 f3 = new Form3();
-                        f3.Show();
-                     }
-                }
-                if(!isDoubleClick && isRight)
-                {
-                    //afficher messsage
-                    ListView.SelectedListViewItemCollection mails = listView1.SelectedItems;
-
-
-                    foreach (ListViewItem item in mails)
-                    {
-                        var SenTo = item.Text;
-                        Form1.SenTo = SenTo;
-                        Form1.Subject = "Re :" + item.SubItems[1].Text;
-                        Form2 f2 = new Form2();
-                        f2.Show();
-                    }
-                }
-                isFirstClick = true;
-                isDoubleClick = false;
-                isRight = false;
-                milliseconds = 0;
-            }
-        }
     }
 
 }

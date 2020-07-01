@@ -41,6 +41,7 @@
             this.textBox1.Size = new System.Drawing.Size(710, 31);
             this.textBox1.TabIndex = 0;
             this.textBox1.Text = "Destinations";
+            this.textBox1.Click += new System.EventHandler(this.textBox1_Click);
             // 
             // textBox2
             // 
@@ -49,6 +50,8 @@
             this.textBox2.Size = new System.Drawing.Size(710, 31);
             this.textBox2.TabIndex = 1;
             this.textBox2.Text = "Objet";
+            this.textBox2.Click += new System.EventHandler(this.textBox2_Click);
+
             // 
             // button1
             // 
@@ -67,6 +70,8 @@
             this.textBox3.Name = "textBox3";
             this.textBox3.Size = new System.Drawing.Size(788, 462);
             this.textBox3.TabIndex = 4;
+            this.textBox3.Click += new System.EventHandler(this.textBox3_Click);
+
             // 
             // Form2
             // 
