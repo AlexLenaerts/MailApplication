@@ -9,6 +9,7 @@ using System.Drawing;
 using System.Net.Mail;
 using System.Text;
 using System.Windows.Forms;
+using System.IO;
 
 namespace MailManager
 {
@@ -17,6 +18,7 @@ namespace MailManager
         bool firstClick = true;
         bool firstClick1 = true;
         bool firstClick2 = true;
+        string filename;
 
 
 
@@ -25,6 +27,7 @@ namespace MailManager
             InitializeComponent();
             textBox1.Text = Form1.SenTo;
             textBox2.Text = Form1.Subject;
+            label1.Text = "";
             CreateMyMultilineTextBox();
 
         }
@@ -54,7 +57,16 @@ namespace MailManager
         }
         private void button1_Click_1(object sender, EventArgs e)
         {
-            Manage.SendMessage(textBox1.Text, textBox2.Text, textBox3.Text);
+            bool isatt;
+            if (filename != "")
+            {
+                isatt = true;
+            }
+            else
+            {
+                isatt = false;
+            }
+            Manage.SendMessage(textBox1.Text, textBox2.Text, textBox3.Text, filename, isatt);
             textBox1.Text = "Destinataires";
             textBox2.Text = "Object";
             textBox3.Text = "Message";
@@ -62,19 +74,7 @@ namespace MailManager
 
         }
 
-
-        public void addAttachement(Message objMessage)
-        {
-            /*
-            List<MessagePart> attachment = objMessage.FindAllAttachments();
-
-            if (attachment.Count > 0)
-            {
-                //message.FileName = attachment[0].FileName.Trim();
-                //message.Attachment = attachment;
-            }
-            */
-        }
+        
         public void CreateMyMultilineTextBox()
         {
             // Create an instance of a TextBox control.
@@ -88,6 +88,24 @@ namespace MailManager
             textBox3.AcceptsTab = true;
             // Set WordWrap to true to allow text to wrap to the next line.
             textBox3.WordWrap = true;
+        }
+
+        private void  button2_Click(object sender, EventArgs e)
+        {
+            OpenFileDialog openFileDialog1 = new OpenFileDialog
+            {
+            };
+            if (openFileDialog1.ShowDialog() == DialogResult.OK)
+            {
+                filename = openFileDialog1.FileName;
+                string name = Path.GetFileName(filename);
+
+                label1.Text = name;
+            }
+            else
+            {
+                filename = "";
+            }
         }
     }
 }

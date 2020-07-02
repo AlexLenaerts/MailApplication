@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Net.Mail;
 using System.Text;
@@ -14,17 +15,12 @@ namespace MailManager
         public static string SenTo { get; internal set; }
         public static string Msg { get; internal set; }
         public static string Subject { get; internal set; }
-        public static string Subjec { get; internal set; }
 
         public Form1()
         {
             InitializeComponent();
             CreateMyMultilineTextBox();
-            listView1.Columns.Add("From", 20);
-            listView1.Columns.Add("Subject", 10);
-            listView1.Columns.Add("Date", 10);
-            listView1.Columns.Add("Content", 0);
-            DisplayData(LoadApp.mail);
+            DisplayData(LoadApp.mail,false);
         }
         public void CreateMyMultilineTextBox()
         {
@@ -40,17 +36,21 @@ namespace MailManager
             // Set WordWrap to true to allow text to wrap to the next line.
             textBox3.WordWrap = true;
         }
-        private void DisplayData(List<Mail> receivedMail)
+        private void DisplayData(List<Mail> receivedMail, bool isOwn)
         {
             listView1.Scrollable = true;
             listView1.View = View.Details;
             listView1.AllowColumnReorder = false;
             listView1.FullRowSelect = true;
             listView1.GridLines = true;
-
+            listView1.Clear();
+            listView1.Columns.Add("From", 20);
+            listView1.Columns.Add("Subject", 10);
+            listView1.Columns.Add("Date", 10);
+            listView1.Columns.Add("Content", 0);
             foreach (var element in receivedMail)
             {
-                if(element.From != "alexandrelenaerts@gmail.com")
+                if (element.From != "alexandrelenaerts@gmail.com" && !isOwn)
                 {
                     ListViewItem row = new ListViewItem(element.From);
                     row.SubItems.Add(new ListViewItem.ListViewSubItem(row, element.Subject));
@@ -58,7 +58,14 @@ namespace MailManager
                     row.SubItems.Add(new ListViewItem.ListViewSubItem(row, element.msg));
                     listView1.Items.Add(row);
                 }
-
+                if ((element.From == "alexandrelenaerts@gmail.com") && isOwn)
+                {
+                    ListViewItem row = new ListViewItem(element.From);
+                    row.SubItems.Add(new ListViewItem.ListViewSubItem(row, element.Subject));
+                    row.SubItems.Add(new ListViewItem.ListViewSubItem(row, element.Date));
+                    row.SubItems.Add(new ListViewItem.ListViewSubItem(row, element.msg));
+                    listView1.Items.Add(row);
+                }
             }
             listView1.AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent);
             listView1.AutoResizeColumns(ColumnHeaderAutoResizeStyle.HeaderSize);
@@ -88,7 +95,7 @@ namespace MailManager
                         mails.Add(new Mail { From = Regex.Match(msg.Headers.From.ToString(), pattern).Value, Subject = msg.Headers.Subject, Date = msg.Headers.DateSent.ToString(), msg = (plainTextPart == null ? "" : plainTextPart.GetBodyAsText().Trim()) });
                     }
                 }
-            DisplayData(mails);
+            DisplayData(mails,false);
 
         }
         private void button2_Click(object sender, EventArgs e)
@@ -133,7 +140,69 @@ namespace MailManager
             Application.Exit();
         }
 
+        private void button4_Click(object sender, EventArgs e)
+        {
+            System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);
+            var mails = new List<Mail>();
+            MessagePart plainTextPart = null, HTMLTextPart = null;
 
+            string pattern = @"[A-Za-z0-9]*[@]{1}[A-Za-z0-9]*[.\]{1}[A-Za-z]*";
+            foreach (var msg in Manage.Receive())
+            {
+                //Check you message is not null
+                if (msg != null)
+                {
+                    plainTextPart = msg.FindFirstPlainTextVersion();
+                    //HTMLTextPart = msg.FindFirstHtmlVersion();
+                    //mail.Html = (HTMLTextPart == null ? "" : HTMLTextPart.GetBodyAsText().Trim());
+                    mails.Add(new Mail { From = Regex.Match(msg.Headers.From.ToString(), pattern).Value, Subject = msg.Headers.Subject, Date = msg.Headers.DateSent.ToString(), msg = (plainTextPart == null ? "" : plainTextPart.GetBodyAsText().Trim()) });
+                }
+            }
+            DisplayData(LoadApp.mail, true);
+        }
+
+        private void button5_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void button6_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void Form1_Load(object sender, EventArgs e)
+        {
+
+        }
+        public void downloadFile(Mail receivedMail)
+        {
+            var mails = receivedMail.Attachment;
+            try
+            {
+                if (mails[0] != null)
+                {
+                    byte[] content = mails[0].Body;
+                    string[] stringParts = mails[0].FileName.Split(new char[] { '.' });
+                    string strType = stringParts[1];
+                    File.WriteAllBytes(@"C:\Users\Alexandre\Downloads\" + stringParts[0] + "." + strType, content);
+                }
+            }
+            catch (Exception ex)
+            {
+
+            }
+        }
+
+        private void button7_Click(object sender, EventArgs e)
+        {
+            ListView.SelectedListViewItemCollection mails = listView1.SelectedItems;
+            var sento = mails[0].Text;
+
+            var down = LoadApp.mail.Where(x => x.From == sento).ToList();
+
+            downloadFile(down.First());
+        }
     }
 
 }

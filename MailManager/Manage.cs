@@ -3,6 +3,7 @@ using OpenPop.Pop3;
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Mail;
+using System.Net.Mime;
 using System.Windows.Forms;
 
 namespace MailManager
@@ -24,12 +25,17 @@ namespace MailManager
             };
             return client;
         }
-        public static MailMessage Message(MailAddress tomail, string messageBody, string messageSubject)
+        public static MailMessage Message(MailAddress tomail, string messageBody, string messageSubject, bool att, string file)
         {
             var fromAddress = new MailAddress("alexandrelenaerts@gmail.com", "Alexandre Lenaerts");
             MailMessage message = new MailMessage(fromAddress, tomail);
             message.Subject = messageSubject;
             message.Body = messageBody;
+            if (att)
+            {
+                Attachment data = new Attachment(file, MediaTypeNames.Application.Octet);
+                message.Attachments.Add(data);
+            }
             return message;
         }
         public static List<OpenPop.Mime.Message> Receive()
@@ -51,14 +57,14 @@ namespace MailManager
             return newMessages;
         }
         
-        public static void SendMessage(string to, string sub, string msg)
+        public static void SendMessage(string to, string sub, string msg, string file, bool isAtt)
         {
             var fromAddress = new MailAddress("alexandrelenaerts@gmail.com", "Alexandre Lenaerts");
             var client = Manage.Connect(fromAddress);
             var senTo = new MailAddress(to);
             var subject = sub;
             var message = msg;
-            client.Send(Manage.Message(senTo, message, subject));
+            client.Send(Manage.Message(senTo, message, subject, isAtt, file));
         }
 
     }

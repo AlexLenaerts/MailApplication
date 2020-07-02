@@ -5,7 +5,10 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.IO;
 using System.Linq;
+using System.Net.Mail;
+using System.Net.Mime;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
@@ -23,9 +26,10 @@ namespace MailManager
 
         public LoadApp()
         {
-           
+
             InitializeComponent();
             button1.Hide();
+            //load mail to DB
             load(60);
         }
 
@@ -35,15 +39,13 @@ namespace MailManager
             progressBar1.Visible = true;
             progressBar1.Minimum = 0;
             progressBar1.Step = 1;
-
-
-            // Set Maximum to the total number of files to copy.
             Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);
             var client = new Pop3Client();
             client.Connect("pop.gmail.com", 995, true);
             client.Authenticate("recent:alexandrelenaerts@gmail.com", "vnfkfkxlcgpnebra");
             List<string> uids = client.GetMessageUids();
             List<OpenPop.Mime.Message> AllMsgReceived = new List<OpenPop.Mime.Message>();
+
             List<string> seenUids = new List<string>();
             int messageCount = client.GetMessageCount();
             progressBar1.Maximum = numberMail;
@@ -52,33 +54,36 @@ namespace MailManager
                     firstkeer = false;
                     for (int i = messageCount; i >= (messageCount - numberMail); i--)
                     {
-                        //progressBar1.PerformStep();
                         progress.Report(messageCount - i);
                         OpenPop.Mime.Message unseenMessage = client.GetMessage(i);
                         AllMsgReceived.Add(unseenMessage);
-                    }
+                }
 
-
-
-                    var mails = new List<Mail>();
+                var mails = new List<Mail>();
                     MessagePart plainTextPart = null, HTMLTextPart = null;
                     string pattern = @"[A-Za-z0-9]*[@]{1}[A-Za-z0-9]*[.\]{1}[A-Za-z]*";
-                    foreach (var msg in AllMsgReceived)
-                    {
+
+
+                foreach (var msg in AllMsgReceived)
+                {
                         //Check you message is not null
                         if (msg != null)
                         {
                             plainTextPart = msg.FindFirstPlainTextVersion();
-                            //HTMLTextPart = msg.FindFirstHtmlVersion();
-                            //mail.Html = (HTMLTextPart == null ? "" : HTMLTextPart.GetBodyAsText().Trim());
-                            mails.Add(new Mail { From = Regex.Match(msg.Headers.From.ToString(), pattern).Value, Subject = msg.Headers.Subject, Date = msg.Headers.DateSent.ToString(), msg = (plainTextPart == null ? "" : plainTextPart.GetBodyAsText().Trim()) });
-                        }
+                        //HTMLTextPart = msg.FindFirstHtmlVersion();
+                        //mail.Html = (HTMLTextPart == null ? "" : HTMLTextPart.GetBodyAsText().Trim());
+
+                        mails.Add(new Mail { From = Regex.Match(msg.Headers.From.ToString(), pattern).Value, Subject = msg.Headers.Subject, Date = msg.Headers.DateSent.ToString(), msg = (plainTextPart == null ? "" : plainTextPart.GetBodyAsText().Trim()), Attachment = msg.FindAllAttachments() });
                     }
-                    LoadApp.mail = mails;
-                    successLoad = true;                
+                }
+                LoadApp.mail = mails;
+                successLoad = true;                
             });
+            label1.Text = "";
+
             button1.Show();
         }
+
 
         private void button1_Click(object sender, EventArgs e)
         {
@@ -92,41 +97,10 @@ namespace MailManager
         //https://www.c-sharpcorner.com/article/download-file-from-email-with-openpop-pop3-openpop-net/
         }
 
-        public void downloadFile(Mail message)
-        {/*
-            List<MessagePart> attachment = message.Attachment;
+       
 
-            try
-            {
-                if (attachment[0] != null)
-                {
-                    byte[] content = attachment[0].Body;
 
-                    //[1] Save file to server path  
-                    //File.WriteAllBytes(Path.Combine(HttpRuntime.AppDomainAppPath, "Files/") + message.FileName, attachment[0].Body);  
 
-                    //[2] Download file  
-                    string[] stringParts = message.FileName.Split(new char[] { '.' });
-                    string strType = stringParts[1];
 
-                    Response.Clear();
-                    Response.ClearContent();
-                    Response.ClearHeaders();
-                    Response.AddHeader("content-disposition", "attachment; filename=" + message.FileName);
-
-                    //Set the content type as file extension type  
-                    Response.ContentType = strType;
-                    //attachment[0].ContentType.MediaType;  
-
-                    //Write the file content  
-                    Response.BinaryWrite(content);
-                    Response.End();
-                }
-            }
-            catch (Exception ex)
-            {
-            }
-            */
-        }
     }
 }

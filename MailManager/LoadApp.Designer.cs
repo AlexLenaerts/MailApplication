@@ -35,6 +35,7 @@ namespace MailManager
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.progressBar1 = new System.Windows.Forms.ProgressBar();
             this.button1 = new System.Windows.Forms.Button();
+            this.label1 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
             // 
@@ -43,7 +44,7 @@ namespace MailManager
             this.pictureBox1.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox1.Image")));
             this.pictureBox1.Location = new System.Drawing.Point(12, 12);
             this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(782, 321);
+            this.pictureBox1.Size = new System.Drawing.Size(782, 292);
             this.pictureBox1.TabIndex = 0;
             this.pictureBox1.TabStop = false;
             // 
@@ -64,9 +65,19 @@ namespace MailManager
             this.button1.UseVisualStyleBackColor = true;
             this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(31, 311);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(59, 25);
+            this.label1.TabIndex = 3;
+            this.label1.Text = "Chargement des mails...";
+            // 
             // LoadApp
             // 
             this.ClientSize = new System.Drawing.Size(806, 417);
+            this.Controls.Add(this.label1);
             this.Controls.Add(this.button1);
             this.Controls.Add(this.progressBar1);
             this.Controls.Add(this.pictureBox1);
@@ -74,6 +85,7 @@ namespace MailManager
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -82,5 +94,6 @@ namespace MailManager
         private System.Windows.Forms.PictureBox pictureBox1;
         private System.Windows.Forms.ProgressBar progressBar1;
         private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Label label1;
     }
 }

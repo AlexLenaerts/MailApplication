@@ -42,12 +42,17 @@ namespace MailManager
             this.textBox2 = new System.Windows.Forms.TextBox();
             this.textBox3 = new System.Windows.Forms.TextBox();
             this.button3 = new System.Windows.Forms.Button();
+            this.button4 = new System.Windows.Forms.Button();
+            this.button5 = new System.Windows.Forms.Button();
+            this.button6 = new System.Windows.Forms.Button();
+            this.button8 = new System.Windows.Forms.Button();
+            this.button7 = new System.Windows.Forms.Button();
             this.contextMenuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(13, 14);
+            this.button1.Location = new System.Drawing.Point(12, 179);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(150, 34);
             this.button1.TabIndex = 1;
@@ -57,11 +62,11 @@ namespace MailManager
             // 
             // button2
             // 
-            this.button2.Location = new System.Drawing.Point(13, 89);
+            this.button2.Location = new System.Drawing.Point(12, 18);
             this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(150, 75);
+            this.button2.Size = new System.Drawing.Size(150, 34);
             this.button2.TabIndex = 2;
-            this.button2.Text = "Nouveau message";
+            this.button2.Text = "Nouveau";
             this.button2.UseVisualStyleBackColor = true;
             this.button2.Click += new System.EventHandler(this.button2_Click);
             // 
@@ -108,7 +113,7 @@ namespace MailManager
             this.textBox3.Location = new System.Drawing.Point(1105, 154);
             this.textBox3.Multiline = true;
             this.textBox3.Name = "textBox3";
-            this.textBox3.Size = new System.Drawing.Size(761, 838);
+            this.textBox3.Size = new System.Drawing.Size(761, 765);
             this.textBox3.TabIndex = 6;
             // 
             // button3
@@ -121,12 +126,66 @@ namespace MailManager
             this.button3.UseVisualStyleBackColor = true;
             this.button3.Click += new System.EventHandler(this.button3_Click);
             // 
+            // button4
+            // 
+            this.button4.Location = new System.Drawing.Point(12, 58);
+            this.button4.Name = "button4";
+            this.button4.Size = new System.Drawing.Size(150, 34);
+            this.button4.TabIndex = 8;
+            this.button4.Text = "Envoyés";
+            this.button4.UseVisualStyleBackColor = true;
+            this.button4.Click += new System.EventHandler(this.button4_Click);
+            // 
+            // button5
+            // 
+            this.button5.Location = new System.Drawing.Point(13, 99);
+            this.button5.Name = "button5";
+            this.button5.Size = new System.Drawing.Size(150, 34);
+            this.button5.TabIndex = 9;
+            this.button5.Text = "Brouillons";
+            this.button5.UseVisualStyleBackColor = true;
+            this.button5.Click += new System.EventHandler(this.button5_Click);
+            // 
+            // button6
+            // 
+            this.button6.Location = new System.Drawing.Point(12, 139);
+            this.button6.Name = "button6";
+            this.button6.Size = new System.Drawing.Size(150, 34);
+            this.button6.TabIndex = 10;
+            this.button6.Text = "Supprimés";
+            this.button6.UseVisualStyleBackColor = true;
+            this.button6.Click += new System.EventHandler(this.button6_Click);
+            // 
+            // button8
+            // 
+            this.button8.Location = new System.Drawing.Point(1223, 3);
+            this.button8.Name = "button8";
+            this.button8.Size = new System.Drawing.Size(112, 34);
+            this.button8.TabIndex = 12;
+            this.button8.Text = "Transférer";
+            this.button8.UseVisualStyleBackColor = true;
+            // 
+            // button7
+            // 
+            this.button7.Location = new System.Drawing.Point(1105, 941);
+            this.button7.Name = "button7";
+            this.button7.Size = new System.Drawing.Size(112, 34);
+            this.button7.TabIndex = 13;
+            this.button7.Text = "Annexes";
+            this.button7.UseVisualStyleBackColor = true;
+            this.button7.Click += new System.EventHandler(this.button7_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(10F, 25F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoSize = true;
             this.ClientSize = new System.Drawing.Size(1898, 1024);
+            this.Controls.Add(this.button7);
+            this.Controls.Add(this.button8);
+            this.Controls.Add(this.button6);
+            this.Controls.Add(this.button5);
+            this.Controls.Add(this.button4);
             this.Controls.Add(this.button3);
             this.Controls.Add(this.textBox3);
             this.Controls.Add(this.textBox2);
@@ -137,6 +196,7 @@ namespace MailManager
             this.Name = "Form1";
             this.Text = "Form1";
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.Form1_FormClosed);
+            this.Load += new System.EventHandler(this.Form1_Load);
             this.contextMenuStrip1.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -153,6 +213,11 @@ namespace MailManager
         private TextBox textBox2;
         private TextBox textBox3;
         private Button button3;
+        private Button button4;
+        private Button button5;
+        private Button button6;
+        private Button button8;
+        private Button button7;
     }
 }
 

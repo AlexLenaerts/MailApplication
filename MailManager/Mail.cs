@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using OpenPop.Mime;
+using OpenPop.Pop3;
 
 namespace MailManager
 {
@@ -10,6 +12,12 @@ namespace MailManager
         public string Subject { get; set; }
         public string Date { get; set; }
         public string msg { get; set; }
+
+        public string FileName;
+
+        public List<MessagePart> Attachment;
+
+
 
 
     }
