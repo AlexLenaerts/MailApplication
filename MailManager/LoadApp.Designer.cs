@@ -71,6 +71,7 @@ namespace MailManager
             this.Controls.Add(this.progressBar1);
             this.Controls.Add(this.pictureBox1);
             this.Name = "LoadApp";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.ResumeLayout(false);
 
