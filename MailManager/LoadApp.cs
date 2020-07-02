@@ -12,40 +12,31 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
+
 namespace MailManager
 {
     public partial class LoadApp : Form
     {
         public static List<Mail> mail;
         public bool successLoad { get; private set; }
+        public bool firstkeer { get; set; }
 
         public LoadApp()
         {
+           
             InitializeComponent();
-
+            button1.Hide();
             load(60);
-        }
-
-        private async void load(object sender, EventArgs e)
-        {
-            IProgress<int> progress = new Progress<int>(value => { progressBar1.Value = value; });
-            await Task.Run(() =>
-            {
-                for (int i = 0; i <= 100; i++)
-                    progress.Report(i);
-            });
         }
 
         public async void load(int numberMail)
         {
-            
             IProgress<int> progress = new Progress<int>(value => { progressBar1.Value = value; });
             progressBar1.Visible = true;
             progressBar1.Minimum = 0;
             progressBar1.Step = 1;
 
-           
-                
+
             // Set Maximum to the total number of files to copy.
             Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);
             var client = new Pop3Client();
@@ -56,36 +47,86 @@ namespace MailManager
             List<string> seenUids = new List<string>();
             int messageCount = client.GetMessageCount();
             progressBar1.Maximum = numberMail;
-
             await Task.Run(() =>
             {
-                for (int i = messageCount; i >= (messageCount - numberMail); i--)
-            {
-                //progressBar1.PerformStep();
-                progress.Report(messageCount-i);
-                OpenPop.Mime.Message unseenMessage = client.GetMessage(i);
-                AllMsgReceived.Add(unseenMessage);
-            }
-                
-         
+                    firstkeer = false;
+                    for (int i = messageCount; i >= (messageCount - numberMail); i--)
+                    {
+                        //progressBar1.PerformStep();
+                        progress.Report(messageCount - i);
+                        OpenPop.Mime.Message unseenMessage = client.GetMessage(i);
+                        AllMsgReceived.Add(unseenMessage);
+                    }
 
-            var mails = new List<Mail>();
-            MessagePart plainTextPart = null, HTMLTextPart = null;
-            string pattern = @"[A-Za-z0-9]*[@]{1}[A-Za-z0-9]*[.\]{1}[A-Za-z]*";
-            foreach (var msg in AllMsgReceived)
+
+
+                    var mails = new List<Mail>();
+                    MessagePart plainTextPart = null, HTMLTextPart = null;
+                    string pattern = @"[A-Za-z0-9]*[@]{1}[A-Za-z0-9]*[.\]{1}[A-Za-z]*";
+                    foreach (var msg in AllMsgReceived)
+                    {
+                        //Check you message is not null
+                        if (msg != null)
+                        {
+                            plainTextPart = msg.FindFirstPlainTextVersion();
+                            //HTMLTextPart = msg.FindFirstHtmlVersion();
+                            //mail.Html = (HTMLTextPart == null ? "" : HTMLTextPart.GetBodyAsText().Trim());
+                            mails.Add(new Mail { From = Regex.Match(msg.Headers.From.ToString(), pattern).Value, Subject = msg.Headers.Subject, Date = msg.Headers.DateSent.ToString(), msg = (plainTextPart == null ? "" : plainTextPart.GetBodyAsText().Trim()) });
+                        }
+                    }
+                    LoadApp.mail = mails;
+                    successLoad = true;                
+            });
+            button1.Show();
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            Visible = false;
+            Form1 f1 = new Form1();
+            f1.Show();
+        }
+
+        public void SaveMailsToDB()
+        {
+        //https://www.c-sharpcorner.com/article/download-file-from-email-with-openpop-pop3-openpop-net/
+        }
+
+        public void downloadFile(Mail message)
+        {/*
+            List<MessagePart> attachment = message.Attachment;
+
+            try
             {
-                //Check you message is not null
-                if (msg != null)
+                if (attachment[0] != null)
                 {
-                    plainTextPart = msg.FindFirstPlainTextVersion();
-                    //HTMLTextPart = msg.FindFirstHtmlVersion();
-                    //mail.Html = (HTMLTextPart == null ? "" : HTMLTextPart.GetBodyAsText().Trim());
-                    mails.Add(new Mail { From = Regex.Match(msg.Headers.From.ToString(), pattern).Value, Subject = msg.Headers.Subject, Date = msg.Headers.DateSent.ToString(), msg = (plainTextPart == null ? "" : plainTextPart.GetBodyAsText().Trim()) });
+                    byte[] content = attachment[0].Body;
+
+                    //[1] Save file to server path  
+                    //File.WriteAllBytes(Path.Combine(HttpRuntime.AppDomainAppPath, "Files/") + message.FileName, attachment[0].Body);  
+
+                    //[2] Download file  
+                    string[] stringParts = message.FileName.Split(new char[] { '.' });
+                    string strType = stringParts[1];
+
+                    Response.Clear();
+                    Response.ClearContent();
+                    Response.ClearHeaders();
+                    Response.AddHeader("content-disposition", "attachment; filename=" + message.FileName);
+
+                    //Set the content type as file extension type  
+                    Response.ContentType = strType;
+                    //attachment[0].ContentType.MediaType;  
+
+                    //Write the file content  
+                    Response.BinaryWrite(content);
+                    Response.End();
                 }
             }
-            LoadApp.mail = mails;
-            successLoad = true;
-            });
+            catch (Exception ex)
+            {
+            }
+            */
         }
     }
 }

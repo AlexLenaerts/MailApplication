@@ -61,6 +61,20 @@ namespace MailManager
             CreateMyMultilineTextBox();
 
         }
+
+
+        public void addAttachement(Message objMessage)
+        {
+            /*
+            List<MessagePart> attachment = objMessage.FindAllAttachments();
+
+            if (attachment.Count > 0)
+            {
+                //message.FileName = attachment[0].FileName.Trim();
+                //message.Attachment = attachment;
+            }
+            */
+        }
         public void CreateMyMultilineTextBox()
         {
             // Create an instance of a TextBox control.

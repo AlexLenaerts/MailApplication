@@ -18,12 +18,6 @@ namespace MailManager
             LoadApp loadpage = new LoadApp();
             Application.Run(new LoadApp());
 
-            if (loadpage.successLoad)
-            {
-                // MainForm is defined elsewhere
-                Application.Run(new Form1());
-            }
-
         }
 
     }

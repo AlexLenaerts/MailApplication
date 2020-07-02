@@ -128,6 +128,10 @@ namespace MailManager
                  f2.Show();
             }                    
         }
+        void Form1_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            Application.Exit();
+        }
 
 
     }
