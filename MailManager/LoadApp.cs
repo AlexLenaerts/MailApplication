@@ -9,6 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace MailManager
@@ -21,15 +22,30 @@ namespace MailManager
         public LoadApp()
         {
             InitializeComponent();
+
             load(60);
         }
-        public void load(int numberMail)
+
+        private async void load(object sender, EventArgs e)
         {
+            IProgress<int> progress = new Progress<int>(value => { progressBar1.Value = value; });
+            await Task.Run(() =>
+            {
+                for (int i = 0; i <= 100; i++)
+                    progress.Report(i);
+            });
+        }
+
+        public async void load(int numberMail)
+        {
+            
+            IProgress<int> progress = new Progress<int>(value => { progressBar1.Value = value; });
             progressBar1.Visible = true;
             progressBar1.Minimum = 0;
             progressBar1.Step = 1;
-            progressBar1.Value= 1;
 
+           
+                
             // Set Maximum to the total number of files to copy.
             Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);
             var client = new Pop3Client();
@@ -39,13 +55,19 @@ namespace MailManager
             List<OpenPop.Mime.Message> AllMsgReceived = new List<OpenPop.Mime.Message>();
             List<string> seenUids = new List<string>();
             int messageCount = client.GetMessageCount();
-            progressBar1.Maximum = 30;
-            for (int i = messageCount; i > (messageCount - numberMail); i--)
+            progressBar1.Maximum = numberMail;
+
+            await Task.Run(() =>
             {
-                progressBar1.PerformStep();
+                for (int i = messageCount; i >= (messageCount - numberMail); i--)
+            {
+                //progressBar1.PerformStep();
+                progress.Report(messageCount-i);
                 OpenPop.Mime.Message unseenMessage = client.GetMessage(i);
                 AllMsgReceived.Add(unseenMessage);
             }
+                
+         
 
             var mails = new List<Mail>();
             MessagePart plainTextPart = null, HTMLTextPart = null;
@@ -63,6 +85,7 @@ namespace MailManager
             }
             LoadApp.mail = mails;
             successLoad = true;
+            });
         }
     }
 }

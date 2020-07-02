@@ -50,11 +50,15 @@ namespace MailManager
 
             foreach (var element in receivedMail)
             {
-                ListViewItem row = new ListViewItem(element.From);
-                row.SubItems.Add(new ListViewItem.ListViewSubItem(row, element.Subject));
-                row.SubItems.Add(new ListViewItem.ListViewSubItem(row, element.Date));
-                row.SubItems.Add(new ListViewItem.ListViewSubItem(row, element.msg));
-                listView1.Items.Add(row);
+                if(element.From != "alexandrelenaerts@gmail.com")
+                {
+                    ListViewItem row = new ListViewItem(element.From);
+                    row.SubItems.Add(new ListViewItem.ListViewSubItem(row, element.Subject));
+                    row.SubItems.Add(new ListViewItem.ListViewSubItem(row, element.Date));
+                    row.SubItems.Add(new ListViewItem.ListViewSubItem(row, element.msg));
+                    listView1.Items.Add(row);
+                }
+
             }
             listView1.AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent);
             listView1.AutoResizeColumns(ColumnHeaderAutoResizeStyle.HeaderSize);
