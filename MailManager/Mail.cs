@@ -17,6 +17,8 @@ namespace MailManager
 
         public List<MessagePart> Attachment;
 
+        public int Reference { get; set; }
+
 
 
 

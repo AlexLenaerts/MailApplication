@@ -29,7 +29,7 @@ namespace MailManager
 
             InitializeComponent();
             button1.Hide();
-            //load mail to DB
+            //load mail from server and add new mail to DB
             load(60);
         }
 
@@ -73,10 +73,14 @@ namespace MailManager
                         //HTMLTextPart = msg.FindFirstHtmlVersion();
                         //mail.Html = (HTMLTextPart == null ? "" : HTMLTextPart.GetBodyAsText().Trim());
 
+                        //ajouter au serveur 
                         mails.Add(new Mail { From = Regex.Match(msg.Headers.From.ToString(), pattern).Value, Subject = msg.Headers.Subject, Date = msg.Headers.DateSent.ToString(), msg = (plainTextPart == null ? "" : plainTextPart.GetBodyAsText().Trim()), Attachment = msg.FindAllAttachments() });
                     }
                 }
-                LoadApp.mail = mails;
+                //Comparer mails avec DB et ceux qui ont été extraits
+                //ajouter ceux qui ne sont pas dans le DB
+
+                //LoadApp.mail = mails;
                 successLoad = true;                
             });
             label1.Text = "";
@@ -91,16 +95,5 @@ namespace MailManager
             Form1 f1 = new Form1();
             f1.Show();
         }
-
-        public void SaveMailsToDB()
-        {
-        //https://www.c-sharpcorner.com/article/download-file-from-email-with-openpop-pop3-openpop-net/
-        }
-
-       
-
-
-
-
     }
 }

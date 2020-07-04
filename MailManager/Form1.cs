@@ -1,6 +1,7 @@
 ﻿using OpenPop.Mime;
 using System;
 using System.Collections.Generic;
+using System.Data.SqlClient;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -15,12 +16,15 @@ namespace MailManager
         public static string SenTo { get; internal set; }
         public static string Msg { get; internal set; }
         public static string Subject { get; internal set; }
+        string ConnectionString = @"Data Source = C:\USERS\ALEXANDRE\SOURCE\REPOS\MAILAPPLICATION\MAILMANAGER\DB\DATABASE1.MDF; Integrated Security = True";
 
         public Form1()
         {
             InitializeComponent();
             CreateMyMultilineTextBox();
-            DisplayData(LoadApp.mail,false);
+            SqlConnection con = new SqlConnection(ConnectionString);
+            DisplayData(ManageDB.DBTOLIST(con), false);
+            //DisplayData(LoadApp.mail,false);
         }
         public void CreateMyMultilineTextBox()
         {
@@ -93,9 +97,11 @@ namespace MailManager
                         //HTMLTextPart = msg.FindFirstHtmlVersion();
                         //mail.Html = (HTMLTextPart == null ? "" : HTMLTextPart.GetBodyAsText().Trim());
                         mails.Add(new Mail { From = Regex.Match(msg.Headers.From.ToString(), pattern).Value, Subject = msg.Headers.Subject, Date = msg.Headers.DateSent.ToString(), msg = (plainTextPart == null ? "" : plainTextPart.GetBodyAsText().Trim()) });
-                    }
+                        //if mails ! DB ajouter 
                 }
-            DisplayData(mails,false);
+                }
+            SqlConnection con = new SqlConnection(ConnectionString);
+            DisplayData(ManageDB.DBTOLIST(con), false);
 
         }
         private void button2_Click(object sender, EventArgs e)
@@ -140,6 +146,7 @@ namespace MailManager
             Application.Exit();
         }
 
+        //Lire les msg envoyés 
         private void button4_Click(object sender, EventArgs e)
         {
             System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);
@@ -158,7 +165,9 @@ namespace MailManager
                     mails.Add(new Mail { From = Regex.Match(msg.Headers.From.ToString(), pattern).Value, Subject = msg.Headers.Subject, Date = msg.Headers.DateSent.ToString(), msg = (plainTextPart == null ? "" : plainTextPart.GetBodyAsText().Trim()) });
                 }
             }
-            DisplayData(LoadApp.mail, true);
+            SqlConnection con = new SqlConnection(ConnectionString);
+            DisplayData(ManageDB.DBTOLIST(con), true);
+            //DisplayData(LoadApp.mail, true);
         }
 
         private void button5_Click(object sender, EventArgs e)
@@ -194,6 +203,7 @@ namespace MailManager
             }
         }
 
+        //download attachment 
         private void button7_Click(object sender, EventArgs e)
         {
             ListView.SelectedListViewItemCollection mails = listView1.SelectedItems;
