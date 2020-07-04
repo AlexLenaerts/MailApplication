@@ -16,13 +16,12 @@ namespace MailManager
         public static string SenTo { get; internal set; }
         public static string Msg { get; internal set; }
         public static string Subject { get; internal set; }
-        string ConnectionString = @"Data Source = C:\USERS\ALEXANDRE\SOURCE\REPOS\MAILAPPLICATION\MAILMANAGER\DB\DATABASE1.MDF; Integrated Security = True";
+        SqlConnection con = new SqlConnection(@"Data Source = C:\USERS\ALEXANDRE\SOURCE\REPOS\MAILAPPLICATION\MAILMANAGER\DB\DATABASE1.MDF; Integrated Security = True");
 
         public Form1()
         {
             InitializeComponent();
             CreateMyMultilineTextBox();
-            SqlConnection con = new SqlConnection(ConnectionString);
             DisplayData(ManageDB.DBTOLIST(con), false);
             //DisplayData(LoadApp.mail,false);
         }
@@ -100,7 +99,6 @@ namespace MailManager
                         //if mails ! DB ajouter 
                 }
                 }
-            SqlConnection con = new SqlConnection(ConnectionString);
             DisplayData(ManageDB.DBTOLIST(con), false);
 
         }
@@ -165,7 +163,6 @@ namespace MailManager
                     mails.Add(new Mail { From = Regex.Match(msg.Headers.From.ToString(), pattern).Value, Subject = msg.Headers.Subject, Date = msg.Headers.DateSent.ToString(), msg = (plainTextPart == null ? "" : plainTextPart.GetBodyAsText().Trim()) });
                 }
             }
-            SqlConnection con = new SqlConnection(ConnectionString);
             DisplayData(ManageDB.DBTOLIST(con), true);
             //DisplayData(LoadApp.mail, true);
         }
