@@ -56,8 +56,9 @@ namespace MailManager
             }
             return newMessages;
         }
+
         
-        public static void SendMessage(string to, string sub, string msg, string file, bool isAtt)
+            public static void SendMessage(string to, string sub, string msg, string file, bool isAtt)
         {
             var fromAddress = new MailAddress("alexandrelenaerts@gmail.com", "Alexandre Lenaerts");
             var client = Manage.Connect(fromAddress);

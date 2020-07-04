@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Data.SqlClient;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -45,6 +46,8 @@ namespace MailManager
             client.Authenticate("recent:alexandrelenaerts@gmail.com", "vnfkfkxlcgpnebra");
             List<string> uids = client.GetMessageUids();
             List<OpenPop.Mime.Message> AllMsgReceived = new List<OpenPop.Mime.Message>();
+            SqlConnection con = new SqlConnection(@"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=C:\Users\Alexandre\Source\Repos\MailApplication\MailManager\DB\database1.mdf;Integrated Security=True");
+            ManageDB.RemoveMail(con);
 
             List<string> seenUids = new List<string>();
             int messageCount = client.GetMessageCount();
@@ -63,7 +66,7 @@ namespace MailManager
                     MessagePart plainTextPart = null, HTMLTextPart = null;
                     string pattern = @"[A-Za-z0-9]*[@]{1}[A-Za-z0-9]*[.\]{1}[A-Za-z]*";
 
-
+                int a = 0;
                 foreach (var msg in AllMsgReceived)
                 {
                         //Check you message is not null
@@ -74,7 +77,13 @@ namespace MailManager
                         //mail.Html = (HTMLTextPart == null ? "" : HTMLTextPart.GetBodyAsText().Trim());
 
                         //ajouter au serveur 
-                        mails.Add(new Mail { From = Regex.Match(msg.Headers.From.ToString(), pattern).Value, Subject = msg.Headers.Subject, Date = msg.Headers.DateSent.ToString(), msg = (plainTextPart == null ? "" : plainTextPart.GetBodyAsText().Trim()), Attachment = msg.FindAllAttachments() });
+                        //mails.Add(new Mail { From = Regex.Match(msg.Headers.From.ToString(), pattern).Value, Subject = msg.Headers.Subject, Date = msg.Headers.DateSent.ToString(), msg = (plainTextPart == null ? "" : plainTextPart.GetBodyAsText().Trim()), Attachment = msg.FindAllAttachments() });
+
+                        ManageDB.AddMailToDB(
+                            new Mail { From = Regex.Match(msg.Headers.From.ToString(), pattern).Value, 
+                                Subject = msg.Headers.Subject, Date = msg.Headers.DateSent.ToString(), 
+                                msg = (plainTextPart == null ? "" : plainTextPart.GetBodyAsText().Trim()), 
+                                Attachment = msg.FindAllAttachments(),Reference= a+=1 },con);                 
                     }
                 }
                 //Comparer mails avec DB et ceux qui ont été extraits

@@ -8,6 +8,7 @@ using System.Linq;
 using System.Net.Mail;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 namespace MailManager
 {
@@ -16,7 +17,7 @@ namespace MailManager
         public static string SenTo { get; internal set; }
         public static string Msg { get; internal set; }
         public static string Subject { get; internal set; }
-        SqlConnection con = new SqlConnection(@"Data Source = C:\USERS\ALEXANDRE\SOURCE\REPOS\MAILAPPLICATION\MAILMANAGER\DB\DATABASE1.MDF; Integrated Security = True");
+        SqlConnection con = new SqlConnection(@"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=C:\Users\Alexandre\Source\Repos\MailApplication\MailManager\DB\database1.mdf;Integrated Security=True");
 
         public Form1()
         {
@@ -51,42 +52,51 @@ namespace MailManager
             listView1.Columns.Add("Subject", 10);
             listView1.Columns.Add("Date", 10);
             listView1.Columns.Add("Content", 0);
+            listView1.Columns.Add("Ref", 0);
+
             foreach (var element in receivedMail)
             {
                 if (element.From != "alexandrelenaerts@gmail.com" && !isOwn)
                 {
-                    ListViewItem row = new ListViewItem(element.From);
-                    row.SubItems.Add(new ListViewItem.ListViewSubItem(row, element.Subject));
-                    row.SubItems.Add(new ListViewItem.ListViewSubItem(row, element.Date));
-                    row.SubItems.Add(new ListViewItem.ListViewSubItem(row, element.msg));
+                    ListViewItem row = new ListViewItem(element.From.Trim());
+                    row.SubItems.Add(new ListViewItem.ListViewSubItem(row, element.Subject.Trim()));
+                    row.SubItems.Add(new ListViewItem.ListViewSubItem(row, element.Date.Trim()));
+                    row.SubItems.Add(new ListViewItem.ListViewSubItem(row, element.msg.Trim()));
+                    row.SubItems.Add(new ListViewItem.ListViewSubItem(row, element.Reference.ToString()));
+
                     listView1.Items.Add(row);
                 }
                 if ((element.From == "alexandrelenaerts@gmail.com") && isOwn)
                 {
-                    ListViewItem row = new ListViewItem(element.From);
-                    row.SubItems.Add(new ListViewItem.ListViewSubItem(row, element.Subject));
-                    row.SubItems.Add(new ListViewItem.ListViewSubItem(row, element.Date));
-                    row.SubItems.Add(new ListViewItem.ListViewSubItem(row, element.msg));
+                    ListViewItem row = new ListViewItem(element.From.Trim());
+                    row.SubItems.Add(new ListViewItem.ListViewSubItem(row, element.Subject.Trim()));
+                    row.SubItems.Add(new ListViewItem.ListViewSubItem(row, element.Date.Trim()));
+                    row.SubItems.Add(new ListViewItem.ListViewSubItem(row, element.msg.Trim()));
+                    row.SubItems.Add(new ListViewItem.ListViewSubItem(row, element.Reference.ToString()));
+
                     listView1.Items.Add(row);
                 }
             }
             listView1.AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent);
             listView1.AutoResizeColumns(ColumnHeaderAutoResizeStyle.HeaderSize);
             listView1.Columns[3].Width = 0;
+            listView1.Columns[4].Width = 0;
             listView1.Columns[1].Width = 890 - listView1.Columns[0].Width - listView1.Columns[2].Width - SystemInformation.VerticalScrollBarWidth - 10;
             ;
         }
-
-        private void button1_Click(object sender, EventArgs e)
+        public async void Refresh()
         {
-            /*Refresh (count message and compare with database*/
-            /*Save new mail to DB*/
-
-                System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);                
+            await Task.Run(() =>
+            {
+                /*Refresh (count message and compare with database*/
+                /*Save new mail to DB*/
+                ManageDB.RemoveMail(con);
+                System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);
                 var mails = new List<Mail>();
                 MessagePart plainTextPart = null, HTMLTextPart = null;
 
                 string pattern = @"[A-Za-z0-9]*[@]{1}[A-Za-z0-9]*[.\]{1}[A-Za-z]*";
+                int a = 0;
                 foreach (var msg in Manage.Receive())
                 {
                     //Check you message is not null
@@ -95,12 +105,24 @@ namespace MailManager
                         plainTextPart = msg.FindFirstPlainTextVersion();
                         //HTMLTextPart = msg.FindFirstHtmlVersion();
                         //mail.Html = (HTMLTextPart == null ? "" : HTMLTextPart.GetBodyAsText().Trim());
-                        mails.Add(new Mail { From = Regex.Match(msg.Headers.From.ToString(), pattern).Value, Subject = msg.Headers.Subject, Date = msg.Headers.DateSent.ToString(), msg = (plainTextPart == null ? "" : plainTextPart.GetBodyAsText().Trim()) });
-                        //if mails ! DB ajouter 
+                        ManageDB.AddMailToDB(
+                                                    new Mail
+                                                    {
+                                                        From = Regex.Match(msg.Headers.From.ToString(), pattern).Value,
+                                                        Subject = msg.Headers.Subject,
+                                                        Date = msg.Headers.DateSent.ToString(),
+                                                        msg = (plainTextPart == null ? "" : plainTextPart.GetBodyAsText().Trim()),
+                                                        Attachment = msg.FindAllAttachments(),
+                                                        Reference = a += 1
+                                                    }, con);                          //if mails ! DB ajouter 
+                    }
                 }
-                }
+            });
             DisplayData(ManageDB.DBTOLIST(con), false);
-
+        }
+        private void button1_Click(object sender, EventArgs e)
+        {
+            Refresh();
         }
         private void button2_Click(object sender, EventArgs e)
         {
@@ -174,8 +196,15 @@ namespace MailManager
 
         private void button6_Click(object sender, EventArgs e)
         {
-
+            ListView.SelectedListViewItemCollection mails = listView1.SelectedItems;
+            foreach (ListViewItem item in mails)
+            {
+                ManageDB.RemoveMailByRef(Int32.Parse(item.SubItems[4].Text), con);
+            }
+            DisplayData(ManageDB.DBTOLIST(con), false);
         }
+
+
 
         private void Form1_Load(object sender, EventArgs e)
         {

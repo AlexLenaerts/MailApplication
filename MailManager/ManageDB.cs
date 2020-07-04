@@ -57,17 +57,26 @@ namespace MailManager
         public static void AddMailToDB(Mail mail, SqlConnection con)
         {
             con.Open();
-            string queryStr = $"INSERT INTO TBLMAIL (from, date, subject, content, ref) VALUES ('{mail.From}','{mail.Date}','{mail.Subject}','{mail.msg}','{mail.Reference}')";
+            string queryStr = $"INSERT INTO TBLMAIL (Dest, date, subject, content, refe) VALUES ('{mail.From}','{mail.Date}','{mail.Subject.Replace("\\", "'").Replace("'", "''")}','{mail.msg.Replace("'","''")}',{mail.Reference})";
             SqlCommand cmd = new SqlCommand(queryStr, con);
             cmd.ExecuteNonQuery();
             con.Close();
         }
 
 
-        public static void RemoveMailByRef(string reference, SqlConnection con)
+        public static void RemoveMailByRef(int reference, SqlConnection con)
         {
             con.Open();
-            string queryStr = $"DELETE FROM TBLMAIL where ref= '{reference}'";
+            string queryStr = $"DELETE FROM TBLMAIL where refe= {reference}";
+            SqlCommand cmd = new SqlCommand(queryStr, con);
+            cmd.ExecuteNonQuery();
+            con.Close();
+        }
+
+        public static void RemoveMail( SqlConnection con)
+        {
+            con.Open();
+            string queryStr = $"DELETE FROM TBLMAIL";
             SqlCommand cmd = new SqlCommand(queryStr, con);
             cmd.ExecuteNonQuery();
             con.Close();
@@ -76,26 +85,10 @@ namespace MailManager
         public static void ModifyDrawMail(Mail mail, SqlConnection con)
         {
             con.Open();
-            string queryStr = $"Update TBLMAIL set from = '{mail.From}', date = '{mail.Date}', subject= '{mail.Subject}', content = '{mail.msg}' where ref= '{mail.Reference}'";
+            string queryStr = $"Update TBLMAIL set from = '{mail.From}', date = '{mail.Date}', subject= '{mail.Subject}', content = '{mail.msg}' where refe= '{mail.Reference}'";
             SqlCommand cmd = new SqlCommand(queryStr, con);
             cmd.ExecuteNonQuery();
             con.Close();
-        }
-
-        public static void ShowDB(SqlConnection con)
-        {
-            con.Open();
-            string queryStr = "SELECT * from TBLMAIL";
-            SqlCommand cmd = new SqlCommand(queryStr, con);
-            SqlDataReader dr = cmd.ExecuteReader();
-
-            while (dr.Read())
-            {
-                Console.WriteLine(String.Format("{0} {1} {2} {3} {4}", dr[1], dr[2], dr[3], dr[4], dr[5]));
-            }
-            dr.Close();
-            con.Close();
-
         }
         public static List<Mail> DBTOLIST(SqlConnection con)
         {
@@ -106,7 +99,7 @@ namespace MailManager
             List<Mail> mails = new List<Mail>();
             while (dr.Read())
             {
-                mails.Add(new Mail { From = dr[1].ToString(), Subject = dr[3].ToString(), Date = dr[4].ToString(), msg = dr[2].ToString(), Reference = Convert.ToInt32(dr[5])});
+                mails.Add(new Mail { From = dr[1].ToString(), Subject = dr[3].ToString(), Date = dr[4].ToString(), msg = dr[2].ToString(), Reference = Convert.ToInt32(dr[5]) });
             }
 
             dr.Close();
