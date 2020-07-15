@@ -86,9 +86,7 @@ namespace MailManager
                                 Attachment = msg.FindAllAttachments(),Reference= a+=1 },con);                 
                     }
                 }
-                //Comparer mails avec DB et ceux qui ont été extraits
-                //ajouter ceux qui ne sont pas dans le DB
-
+                ManageDB.AddNewContact(con);
                 //LoadApp.mail = mails;
                 successLoad = true;                
             });

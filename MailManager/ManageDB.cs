@@ -90,6 +90,18 @@ namespace MailManager
             cmd.ExecuteNonQuery();
             con.Close();
         }
+
+        public static void AddNewContact(SqlConnection con)
+        {
+            con.Open();
+            string queryStr = $"INSERT INTO TBLFROM (dest) Select DISTINCT dest from TBLMAIL";
+            SqlCommand cmd = new SqlCommand(queryStr, con);
+            cmd.ExecuteNonQuery();
+            con.Close();
+        }
+
+
+
         public static List<Mail> DBTOLIST(SqlConnection con)
         {
             con.Open();
